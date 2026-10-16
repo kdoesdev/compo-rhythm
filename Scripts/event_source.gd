@@ -15,11 +15,11 @@ var is_active : bool = false
 @export var mesh : MeshInstance3D
 
 # the beats that are queued up
-@export var beat_combo : BeatCombo
+@export var beat_combo : int = 1
 	
 func process_beat_event(event : BeatEvent, result : RuleSet.EventResult):
 	print("processing beat event, result: ",  RuleSet.EventResult.keys()[result])
-	events.erase(event.beat)
+	events.erase(event.time)
 	
 func process_status_update(_event : BeatEvent, new_status: RuleSet.WindowStatus):
 	var color := RuleSet.timing_feedback_color[new_status]
@@ -28,13 +28,24 @@ func process_status_update(_event : BeatEvent, new_status: RuleSet.WindowStatus)
 		material.albedo_color = color
 
 func queue_events():
-	for timing in beat_combo.timings.keys():
-		var event : BeatEvent = Conductor.add_event_to_track(beat_combo.timings[timing], timing)
+	var current_beat : float = Conductor.get_current_time() * Conductor.bpm / 60
+	var next_beat : float = Conductor.get_current_time() + (4 - fmod(current_beat, 4)) * 60 / Conductor.bpm
+	
+	var notes : Array[Variant] = Conductor.get_notes_in_range(next_beat, next_beat + RuleSet.max_combo_duration)
+	notes = notes.filter(func(variant): return variant['track'] == 1)
+
+	var delta : float = -1
+	for note in notes:
+		if note['subtype'] != MIDI_MESSAGE_NOTE_ON:
+			continue
+		delta = note['time']
+		
+		var event : BeatEvent = Conductor.add_event_to_track(delta, note)
 		if !event:
 			#TODO: don't let this fail silently
 			continue
 		event.result.connect(process_beat_event)
 		event.update.connect(process_status_update)
-		events.get_or_add(event.beat, event)
-	
-	is_active = true
+		events.get_or_add(event.time, event)
+		
+		is_active = true

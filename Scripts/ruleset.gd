@@ -6,6 +6,9 @@ enum WindowStatus {APPROACHING, OPEN, CLOSED}
 const window_approaching_ms : float = 500
 const window_open_ms : float = 150
 
+# How long ahead a single entity can look ahead to source notes for their combo
+const max_combo_duration : float = 4
+
 var timing_windows_ms : Dictionary[float, EventResult] = {	
 	35: EventResult.PERFECT,
 	75: EventResult.GOOD,

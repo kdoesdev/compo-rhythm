@@ -19,6 +19,7 @@ albedo_color = Color(0, 0, 0, 1)
 script = ExtResource("1_fos0i")
 
 [node name="conductor" parent="." unique_id=1406137218 instance=ExtResource("5_fos0i")]
+midi = null
 script = null
 
 [node name="CharacterBody3D" parent="." unique_id=1841788958 instance=ExtResource("6_3dxm6")]

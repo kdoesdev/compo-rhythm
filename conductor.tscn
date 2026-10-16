@@ -1,28 +1,27 @@
 [gd_scene format=3 uid="uid://dry8gufuf4jb"]
 
+[ext_resource type="MidiResource" uid="uid://efwy3fbbqxwd" path="res://sound/songs/MemphisBlues.mid" id="1_brquv"]
 [ext_resource type="Script" uid="uid://bx07fqttcpv6" path="res://scripts/conductor.gd" id="1_dbxwv"]
 [ext_resource type="AudioStream" uid="uid://csa21mc7s6tbk" path="res://sound/songs/memphis_blues.wav" id="1_vw85u"]
-[ext_resource type="Script" uid="uid://2rp2p3vh772j" path="res://scripts/timing_track.gd" id="2_ii0ch"]
+[ext_resource type="AudioStream" uid="uid://s87cvcol08ys" path="res://sound/effect/beat_missed.wav" id="3_brquv"]
 [ext_resource type="AudioStream" uid="uid://b1cbkpwqahma7" path="res://Perc_MetronomeQuartz_hi.wav" id="3_x67ht"]
 [ext_resource type="Script" uid="uid://dpes0xc1mj66k" path="res://scripts/metronome.gd" id="4_x67ht"]
 [ext_resource type="AudioStream" uid="uid://b33wm7i01tusg" path="res://sound/effect/beat_hit.wav" id="6_vw85u"]
-[ext_resource type="AudioStream" uid="uid://s87cvcol08ys" path="res://sound/effect/beat_missed.wav" id="7_2staa"]
 
-[node name="Conductor" type="AudioStreamPlayer" unique_id=967332129]
-process_mode = 3
-stream = ExtResource("1_vw85u")
+[node name="MidiPlayer" type="MidiPlayer" unique_id=1334300929]
+midi = ExtResource("1_brquv")
+auto_stop = false
 script = ExtResource("1_dbxwv")
-bpm = 90.0
-first_beat_offset_ms = 32000
+sound_missed = ExtResource("3_brquv")
 
-[node name="TimingTrack" type="Node" parent="." unique_id=1403991916]
-script = ExtResource("2_ii0ch")
-sound_missed = ExtResource("7_2staa")
-metadata/_custom_type_script = "uid://2rp2p3vh772j"
+[node name="MainTrack" type="AudioStreamPlayer" parent="." unique_id=40932846]
+stream = ExtResource("1_vw85u")
 
 [node name="Metronome" type="AudioStreamPlayer" parent="." unique_id=1850760269]
 stream = ExtResource("3_x67ht")
 script = ExtResource("4_x67ht")
 
-[node name="EventResultSound" type="AudioStreamPlayer" parent="." unique_id=1996590842]
+[node name="EventResultSound" type="AudioStreamPlayer" parent="." unique_id=795338584]
 stream = ExtResource("6_vw85u")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=165751154]

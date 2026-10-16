@@ -2,7 +2,8 @@ extends EventSource
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if Conductor._is_playing:
+	await get_tree().create_timer(2).timeout
+	if Conductor.get_state() == 0:
 		queue_events()
 	else: Conductor.song_started.connect(queue_events)
 	

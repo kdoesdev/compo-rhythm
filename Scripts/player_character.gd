@@ -5,7 +5,7 @@ const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("acknowledge_beatddasdfasd"):
+	if event.is_action_pressed("acknowledge_beat"):
 		Conductor.attempt_events()
 
 

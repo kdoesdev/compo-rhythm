@@ -1,169 +1,172 @@
-extends AudioStreamPlayer
+extends MidiPlayer
 
-# General conductor state
-var _is_playing: bool = false
+@onready var main_track : AudioStreamPlayer = $MainTrack
+@onready var sound_hit_player : AudioStreamPlayer = $EventResultSound
+@export var sound_missed : AudioStreamWAV = null
+
+var track_names : Dictionary[int, String]
 
 signal song_started
+signal event_added(event : BeatEvent)
 
-# Audio thread state
-var _song_time_audio: float = -100
+class BeatEvents:
+	func UpdateStatus(new_status : RuleSet.WindowStatus):
+		_status = new_status
+		for event in events:
+			event.update.emit(event, _status)
+	var _status : RuleSet.WindowStatus = RuleSet.WindowStatus.CLOSED
+	var events : Array[BeatEvent] = []
 
-@export var bpm : float = 60
-var beats_per_bar : int = 4
+# all events that have been queued up [time][events]
+var _queued_events : Dictionary[float, BeatEvents]
 
-# Tracking the beat
-var song_position_in_beats = 1
-var sec_per_beat = 60.0 / bpm
-var last_reported_beat = 0
-var measure = 1
-
-var current_beat_cached : float = 0
-
-# System time state
-var _song_time_begin: float = 0
-var _song_time_system: float = 0
-
-# Filtered time state
-var _filter: OneEuroFilter
-var _filtered_audio_system_delta: float = 0
-
-# Determining how close to the beat an event is
-var closest = 0
-var time_off_beat = 0.0
-
-# Calling this is expensive, so cache the value. This should not change.
-var _cached_output_latency: float = AudioServer.get_output_latency()
-
-## Offset (in milliseconds) of when the 1st beat of the song is in the audio
-## file. [code]5000[/code] means the 1st beat happens 5 seconds into the track.
-@export var first_beat_offset_ms: int = 0
-
-@export_group("Filter Parameters")
-## [code]cutoff[/code] for the 1€ filter. Decrease to reduce jitter.
-@export var allowed_jitter: float = 0.1
-## [code]beta[/code] for the 1€ filter. Increase to reduce lag.
-@export var lag_reduction: float = 5
-
-@onready var timing_track : TimingTrack = $TimingTrack
-@onready var metronome : Metronome = $Metronome
+var bpm : float
 
 func _ready():
-	_song_time_begin = (Time.get_ticks_usec() / 1000000.0)
-	metronome.start()
-	print("Current Beat: ", current_beat_cached)
-
-func _process(delta: float) -> void:
-	if not _is_playing:
-		return
-
-	# Handle a web bug where AudioServer.get_time_since_last_mix() occasionally
-	# returns unsigned 64-bit integer max value. This is likely due to minor
-	# timing issues between the main/audio threads, thus causing an underflow
-	# in the engine code.
-	var last_mix := AudioServer.get_time_since_last_mix()
-	if last_mix > 1000:
-		last_mix = 0
-
-	# First, calculate the song time using data from the audio thread. This
-	# value is very jittery, but will always match what the player is hearing.
-	_song_time_audio = (
-			get_playback_position()
-			# The 1st beat may not start at second 0 of the audio track. Compensate
-			# with an offset setting.
-			- first_beat_offset_ms / 1000.0
-			# For most platforms, the playback position value updates in chunks,
-			# with each chunk being one "mix". Smooth this out by adding in the time
-			# since the last chunk was processed.
-			+ last_mix
-			# Current processed audio is heard later.
-			- _cached_output_latency
-		)
-
-	# Next, calculate the song time using the system clock at render rate. This
-	# value is very stable, but can drift from the playing audio due to pausing,
-	# stuttering, etc.
-	_song_time_system = (Time.get_ticks_usec() / 1000000.0) - _song_time_begin
-	_song_time_system *= pitch_scale
 	
-	var current_beat = floor(get_current_beat())
-	if current_beat_cached != current_beat:
-		current_beat_cached = current_beat
-		print("Current Beat: ", current_beat_cached)
+	bpm = 60000000.0/Conductor.midi.tempo
+	bpm = ceil(bpm) if is_equal_approx(bpm, ceil(bpm)) else bpm
+	
+	await get_tree().create_timer(1).timeout
+	
+	assert(midi.format == 1)
+	
+	if midi.format != 1:
+		return
+	
+	for track in midi.get_tracks():
 		
-	process_track()
+		# first track contains song meta
+		# set the tempo (plugin currently fails to do this for you)
+		if track['events'][0]['track'] == 0:
+			for event in track["events"]:
+				if event['subtype'] == 81:
+					midi.tempo = event['data']
+			continue
+			
+		# Note events won't contain the track name
+		# So match it to the track number in advance
+		var track_meta = track["events"][0]
+		if track_meta["type"] == "meta":
+			track_names.get_or_add(track_meta["track"], track_meta["data"])
 	
-func _physics_process(delta: float) -> void:
-	if not _is_playing:
-		return
+	# link the AudioStreamPlayer in your scene
+	# that contains the music associated with the midi
+	# NOTE: this must be an array, you can link multiple ASPs or one as
+	# shown below and they will all sync with playback of the MIDI
 
-	# To have the best of both the audio-based time and system-based time, we
-	# apply a smoothing filter (1€ filter) on the delta between the two values,
-	# then add it to the system-based time. This allows us to have a stable
-	# value that is also always accurate to what the player hears.
-	#
-	# Notes:
-	# - The 1€ filter jitter reduction is more effective on values that don't
-	#   change drastically between samples, so we filter on the delta (generally
-	#   less variable between frames) rather than the time itself.
-	# - We run the filter step in _physics_process to reduce the variability of
-	#   different systems' update rates. The filter params are specifically
-	#   tuned for 60 UPS.
-	var audio_system_delta := _song_time_audio - _song_time_system
-	_filtered_audio_system_delta = _filter.filter(audio_system_delta, delta)
-
-	# Uncomment this to show the difference between raw and filtered time.
-	#var song_time := _song_time_system + _filtered_audio_system_delta
-	#print("Error: %+.1f ms" % [abs(song_time - _song_time_audio) * 1000.0])
-
-
-
-func start() -> void:
-	var filter_args := {
-		"cutoff": allowed_jitter,
-		"beta": lag_reduction,
-	}
-	_filter = OneEuroFilter.new(filter_args)
-
+	link_audio_stream_player([main_track])
+	note.connect(my_note_callback)
 	play()
-	_is_playing = true
 	song_started.emit()
-
-	# Capture the start of the song using the system clock.
-	_song_time_begin = (
-			Time.get_ticks_usec() / 1000000.0
-			# The 1st beat may not start at second 0 of the audio track. Compensate
-			# with an offset setting.
-			+ first_beat_offset_ms / 1000.0
-			# Playback does not start immediately, but only when the next audio
-			# chunk is processed (the "mix" step). Add in the time until that
-			# happens.
-			+ AudioServer.get_time_to_next_mix()
-			# Add in additional output latency.
-			+ _cached_output_latency
-		)
-
-
-
-## Returns the duration of one beat (in seconds).
-func get_beat_duration() -> float:
-	return 60 / bpm
 	
-func get_current_beat() -> float:
-	var song_time := _song_time_system + _filtered_audio_system_delta
-	return song_time / get_beat_duration()
-	
-func get_beat_time(beat : float) -> float:
-	return beat * get_beat_duration()
+func _process(delta: float) -> void:
+	process_beat(get_current_time())
 
-func add_event_to_track(next_beat : BeatEventSpec, timing : float) -> BeatEvent:
-	if !_is_playing || get_current_beat() < 0:
+func my_note_callback(event, track):
+	if (event['subtype'] != MIDI_MESSAGE_NOTE_ON): # note on
 		return
-	var event : BeatEvent = BeatEvent.create(next_beat, ceil(get_current_beat()) + timing)
-	timing_track.add_event(event)
+		
+	var track_name := track_names[track]
+	
+	if track_name != "Kick":
+		return
+		
+	var sound : AudioStreamWAV = load("res://sound/songs/" + track_name + ".wav")
+	#for timing in _queued_events:
+		#if timing == get_current_time():
+	var player : AudioStreamPlayer = AudioStreamPlayer.new()
+	add_child(player)
+	player.stream = sound
+	player.play()
+	player.finished.connect(player.queue_free)
+
+	print("[Track: " + str(track) + "] Note played: " + str(event['note'] ))
+
+func get_queued_events() -> Dictionary[float, BeatEvents]:
+	return _queued_events
+
+# The timing track is an updatable list of ACTIVE beat events
+func add_event(event: BeatEvent):
+	_queued_events.get_or_add(event.time, BeatEvents.new())
+	_queued_events[event.time].events.append(event)
+	event_added.emit(event)
+
+func add_event_to_track(timing : float, note : Variant) -> BeatEvent:
+
+	if get_state() == 2 || get_current_time() <= 0:
+		return
+	var event : BeatEvent = BeatEvent.create(timing, note)
+	add_event(event) 
 	return event
-	
+
+
 func attempt_events():
-	timing_track.attempt_events(get_current_beat())
+	for timestamp in _queued_events:
+		if _queued_events[timestamp]._status != RuleSet.WindowStatus.OPEN:
+			return
+			
+		var timing_result := get_timing_result(timestamp)
+		for beat_event in _queued_events.get(timestamp).events as Array[BeatEvent]:
+			beat_event.result.emit(beat_event, timing_result)
+			_queued_events.erase(timestamp)
 	
-func process_track():
-	timing_track.process_beat(get_current_beat())
+			var track_name : String = Conductor.track_names.get(beat_event.note['track'])
+			var sound : AudioStreamWAV = load("res://sound/songs/" + track_name + ".wav")
+			var player : AudioStreamPlayer = AudioStreamPlayer.new()
+			add_child(player)
+			player.stream = sound
+			player.play()
+			player.finished.connect(player.queue_free)
+			
+			match timing_result:
+				RuleSet.EventResult.PERFECT:
+					print("PERFECT")
+				RuleSet.EventResult.GOOD:
+					print("GOOD")
+				RuleSet.EventResult.MISSED:
+					sound_hit_player.stream = sound_missed
+					sound_hit_player.play()
+					
+
+func process_beat(current_beat : float):
+	for event_beat in _queued_events:
+		
+		var time_diff_ms : float = abs(get_time_diff_ms(event_beat))
+		var new_status := get_beat_status_from_ms(time_diff_ms)
+		
+		if _queued_events[event_beat]._status == new_status:
+			continue
+		
+		_queued_events[event_beat].UpdateStatus(new_status)
+		if (new_status == RuleSet.WindowStatus.CLOSED && time_diff_ms > 0):
+			for event in _queued_events[event_beat].events:
+				event.result.emit(event, RuleSet.EventResult.MISSED)
+				_queued_events.erase(event_beat)
+				sound_hit_player.stream = sound_missed
+				sound_hit_player.play()
+
+func get_timing_result(event_beat : float) -> RuleSet.EventResult:
+	var time_diff_ms : float = abs(get_time_diff_ms(event_beat))
+	for timing_window in RuleSet.timing_windows_ms:
+		if time_diff_ms <= timing_window:
+			return RuleSet.timing_windows_ms[timing_window]
+			
+	return RuleSet.EventResult.MAX
+
+func get_beat_status(event_beat : float) -> RuleSet.WindowStatus:
+	var time_diff_ms : float = get_time_diff_ms(event_beat)
+	return get_beat_status_from_ms(time_diff_ms)
+
+func get_time_diff_ms(event_beat: float) -> float:
+	return (event_beat - get_current_time()) * 1000
+
+func get_beat_status_from_ms(time_diff_ms : float) -> RuleSet.WindowStatus:
+	if abs(time_diff_ms) <= RuleSet.window_open_ms:
+		return RuleSet.WindowStatus.OPEN
+	
+	# approaching is from one direction
+	if time_diff_ms <= 0 && abs(time_diff_ms) <= RuleSet.window_approaching_ms:
+		return RuleSet.WindowStatus.APPROACHING
+		
+	return RuleSet.WindowStatus.CLOSED

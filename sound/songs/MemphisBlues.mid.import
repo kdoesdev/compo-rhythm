@@ -1,0 +1,14 @@
+[remap]
+
+importer="com.nlaha.godotmidi"
+type="MidiResource"
+uid="uid://efwy3fbbqxwd"
+path="res://.godot/imported/MemphisBlues.mid-4805284c37648f82d6c7dba0efdb48ef.res"
+
+[deps]
+
+source_file="res://sound/songs/MemphisBlues.mid"
+dest_files=["res://.godot/imported/MemphisBlues.mid-4805284c37648f82d6c7dba0efdb48ef.res"]
+
+[params]
+

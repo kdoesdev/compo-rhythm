@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dkiepfhbgdh3q"]
 
 [ext_resource type="Script" uid="uid://d4ngh8c0cmmht" path="res://scripts/example_event_source.gd" id="1_t2oga"]
-[ext_resource type="Resource" uid="uid://bnc2c2ostesi6" path="res://systems/beat/example_beat_combo.tres" id="2_84t62"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_sgvrc"]
 
@@ -11,7 +10,6 @@ resource_local_to_scene = true
 [node name="TestEventSource" type="Node3D" unique_id=1791167107 node_paths=PackedStringArray("mesh")]
 script = ExtResource("1_t2oga")
 mesh = NodePath("Mesh")
-beat_combo = ExtResource("2_84t62")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=164620570]
 mesh = SubResource("BoxMesh_sgvrc")

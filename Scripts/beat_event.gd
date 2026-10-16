@@ -6,13 +6,14 @@ signal result(event : BeatEvent, result : RuleSet.EventResult)
 signal update(event : BeatEvent, status : RuleSet.WindowStatus)
 
 # The when of this events validity, in practice it is this +- the timing window
-@export var beat : float = -1
+var time : float = -1
 var spec : BeatEventSpec = null
+var note : Variant
 
-static func create(spec : BeatEventSpec, beat: float) -> BeatEvent:
+static func create(time : float, note : Variant) -> BeatEvent:
 	var instance : BeatEvent = BeatEvent.new()
-	instance.beat = beat
-	instance.spec = spec
+	instance.time = time
+	instance.note = note
 	return instance
 	
 class event_spec:
