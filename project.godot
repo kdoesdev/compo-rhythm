@@ -38,6 +38,19 @@ window/vsync/vsync_mode=3
 
 enabled=PackedStringArray("res://addons/godot_midi/plugin.cfg")
 
+[file_customization]
+
+folder_colors={
+"res://Tests/": "gray",
+"res://addons/": "yellow",
+"res://common/": "green",
+"res://entities/": "orange",
+"res://scripts/": "red",
+"res://sound/": "purple",
+"res://systems/": "pink",
+"res://ui/": "teal"
+}
+
 [input]
 
 acknowledge_beat={
