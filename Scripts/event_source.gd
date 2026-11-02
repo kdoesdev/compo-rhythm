@@ -6,6 +6,9 @@ class_name EventSource
 
 # an event source will send out BeatEvent(s) to be responded to by the player or world
 
+# How long ahead a single entity can look ahead to source notes for their combo
+@export var max_combo_duration : float = 4
+
 var events : Dictionary[float, BeatEvent]
 
 var status : RuleSet.WindowStatus
@@ -31,8 +34,8 @@ func queue_events():
 	var current_beat : float = Conductor.get_current_time() * Conductor.bpm / 60
 	var next_beat : float = Conductor.get_current_time() + (4 - fmod(current_beat, 4)) * 60 / Conductor.bpm
 	
-	var notes : Array[Variant] = Conductor.get_notes_in_range(next_beat, next_beat + RuleSet.max_combo_duration)
-	notes = notes.filter(func(variant): return variant['track'] == 1)
+	var notes : Array[Variant] = Conductor.get_notes_in_range(next_beat, next_beat + max_combo_duration)
+	notes = notes.filter(func(variant): return variant['track'] == 2)
 
 	var delta : float = -1
 	for note in notes:

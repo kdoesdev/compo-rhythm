@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SongSpec" format=3 uid="uid://cykp2umwlg6gh"]
+
+[ext_resource type="AudioStream" uid="uid://mr3dkrtp1gcu" path="res://sound/songs/swinglounge/swing_lounge_master.wav" id="1_7dwvp"]
+[ext_resource type="Script" uid="uid://bl5jl44d7aqaw" path="res://scripts/song_spec.gd" id="1_q5sqs"]
+[ext_resource type="AudioStream" uid="uid://cvqheucoy1s4h" path="res://sound/songs/swinglounge/drums_fx.wav" id="2_ejxhk"]
+[ext_resource type="AudioStream" uid="uid://crykx3ft0bbkw" path="res://sound/songs/swinglounge/swing_lounge_guitar.wav" id="3_ejxhk"]
+[ext_resource type="MidiResource" uid="uid://b1fwfh2gcgfa2" path="res://sound/songs/SwingLounge.mid" id="5_kn0kk"]
+
+[resource]
+script = ExtResource("1_q5sqs")
+base_track = ExtResource("1_7dwvp")
+layers = Dictionary[int, AudioStreamWAV]({
+1: ExtResource("2_ejxhk"),
+2: ExtResource("3_ejxhk")
+})
+midi = ExtResource("5_kn0kk")
+metadata/_custom_type_script = "uid://bl5jl44d7aqaw"

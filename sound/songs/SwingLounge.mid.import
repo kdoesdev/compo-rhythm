@@ -1,0 +1,14 @@
+[remap]
+
+importer="com.nlaha.godotmidi"
+type="MidiResource"
+uid="uid://b1fwfh2gcgfa2"
+path="res://.godot/imported/SwingLounge.mid-e1bf7f429e1f6d3cab4b37f64289e7ca.res"
+
+[deps]
+
+source_file="res://sound/songs/SwingLounge.mid"
+dest_files=["res://.godot/imported/SwingLounge.mid-e1bf7f429e1f6d3cab4b37f64289e7ca.res"]
+
+[params]
+

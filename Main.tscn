@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://oynmr6lxwidd"]
 
 [ext_resource type="Script" uid="uid://cs7ur432qjm7v" path="res://scripts/main.gd" id="1_fos0i"]
+[ext_resource type="MidiResource" uid="uid://b1fwfh2gcgfa2" path="res://sound/songs/SwingLounge.mid" id="3_trn2v"]
 [ext_resource type="PackedScene" uid="uid://dry8gufuf4jb" path="res://conductor.tscn" id="5_fos0i"]
 [ext_resource type="PackedScene" uid="uid://dif2dsqo04tmk" path="res://player_character.tscn" id="6_3dxm6"]
 [ext_resource type="PackedScene" uid="uid://5k2xvjhvmdnx" path="res://hud.tscn" id="6_lgr22"]
 [ext_resource type="PackedScene" uid="uid://bkumi1yk5hym2" path="res://floor.tscn" id="7_lgr22"]
-[ext_resource type="PackedScene" uid="uid://dkiepfhbgdh3q" path="res://entities/NPC/hostile/example_event_source.tscn" id="7_trn2v"]
+[ext_resource type="PackedScene" uid="uid://cran6pes5ikt0" path="res://entities/NPC/hostile/generic_enemy.tscn" id="8_03owx"]
 [ext_resource type="PackedScene" uid="uid://b8l4ac8wswerd" path="res://ui/timing/track_visualiser.tscn" id="8_trn2v"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_l3n1l"]
@@ -19,11 +20,11 @@ albedo_color = Color(0, 0, 0, 1)
 script = ExtResource("1_fos0i")
 
 [node name="conductor" parent="." unique_id=1406137218 instance=ExtResource("5_fos0i")]
-midi = null
+midi = ExtResource("3_trn2v")
 script = null
 
 [node name="CharacterBody3D" parent="." unique_id=1841788958 instance=ExtResource("6_3dxm6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.0565705, 0.1767695, -1.5685639)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.092427, 0.1767695, -1.7245574)
 
 [node name="Area3D4" parent="." unique_id=1431732628 instance=ExtResource("7_lgr22")]
 transform = Transform3D(0, 4.3711392e-08, 1, 1.0000001, 0, 0, 0, 1.0000001, -4.371139e-08, 0, 0, 9.733982)
@@ -62,7 +63,7 @@ transform = Transform3D(0, 1.0000001, 7.4098203e-09, 1.0000001, 0, 0, 0, 1.39090
 [node name="Area3D5" parent="NavigationRegion3D" unique_id=1447154830 instance=ExtResource("7_lgr22")]
 transform = Transform3D(0, 4.3711392e-08, 1, 1.0000001, 0, 0, 0, 1.0000001, -4.371139e-08, 0, 0, -9.717487)
 
-[node name="TestEventSource" parent="." unique_id=1791167107 instance=ExtResource("7_trn2v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2557135, 0.50024986, -3.4953709)
+[node name="HostileHumanoid" parent="." unique_id=1808762767 instance=ExtResource("8_03owx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.635823, 0.81874704, 3.5652947)
 
 [editable path="NavigationRegion3D/Area3D"]
