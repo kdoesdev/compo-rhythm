@@ -34,16 +34,28 @@ func queue_events():
 	var current_beat : float = Conductor.get_current_time() * Conductor.bpm / 60
 	var next_beat : float = Conductor.get_current_time() + (4 - fmod(current_beat, 4)) * 60 / Conductor.bpm
 	
-	var notes : Array[Variant] = Conductor.get_notes_in_range(next_beat, next_beat + max_combo_duration)
-	notes = notes.filter(func(variant): return variant['track'] == 2)
+	var notes : Array[Variant] = Conductor.get_notes_in_range(next_beat, next_beat + 20)
+	notes = notes.filter(func(variant): return variant['track'] == 1)
 
-	var delta : float = -1
+	var found_combo_start : bool = false
+	var time : float = -1
 	for note in notes:
 		if note['subtype'] != MIDI_MESSAGE_NOTE_ON:
+			if found_combo_start && note['note'] == 0:
+				break # end of combo reached
 			continue
-		delta = note['time']
 		
-		var event : BeatEvent = Conductor.add_event_to_track(delta, note)
+		if !found_combo_start:
+			if note['note'] != 0:
+				continue
+			found_combo_start = true
+			continue
+			
+		if note['note'] == 0:
+			continue
+		
+		time = note['time']
+		var event : BeatEvent = Conductor.add_event_to_track(time, note)
 		if !event:
 			#TODO: don't let this fail silently
 			continue

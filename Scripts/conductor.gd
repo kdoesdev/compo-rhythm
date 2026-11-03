@@ -204,7 +204,7 @@ func process_beat():
 			for event in _queued_events[event_beat].events:
 				event.result.emit(event, RuleSet.EventResult.MISSED)
 				_queued_events.erase(event_beat)
-				sound_hit_player.stream = sound_missed
+				#sound_hit_player.stream = sound_missed
 				sound_hit_player.play()
 
 func get_timing_result(event_beat : float) -> RuleSet.EventResult:
