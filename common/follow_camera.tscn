@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://b78wc703tpmyx"]
+
+[ext_resource type="Script" uid="uid://8sqaqlde0fhy" path="res://common/interpolate_position.gd" id="1_v8rfw"]
+
+[node name="Node3D" type="Node3D" unique_id=2038254714 node_paths=PackedStringArray("nodes")]
+script = ExtResource("1_v8rfw")
+nodes = [null]
