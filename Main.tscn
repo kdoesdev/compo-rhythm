@@ -30,29 +30,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.092427, 0.1767695, -1.72455
 transform = Transform3D(0, 4.3711392e-08, 1, 1.0000001, 0, 0, 0, 1.0000001, -4.371139e-08, 0, 0, 9.733982)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1792867621]
-transform = Transform3D(1, 0, 0, 0, 0.13069652, 0.9914225, 0, -0.9914225, 0.13069652, 0, 24.052156, 3.212274)
-fov = 54.0
+transform = Transform3D(1, 0, 0, 0, 0.32984343, 0.9440357, 0, -0.9440357, 0.32984343, 0, 20.752087, 2.6562622)
+fov = 60.0
+size = 0.05
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D" unique_id=1075270866]
+transform = Transform3D(0.8660254, -0.06534826, -0.49571124, 0.06534826, 0.9977115, -0.017359808, 0.49571124, -0.017359808, 0.8683139, 0, 0, 0)
 
 [node name="HUD" parent="." unique_id=250146075 instance=ExtResource("6_lgr22")]
 
 [node name="TrackVisualiser" parent="." unique_id=30971489 instance=ExtResource("8_trn2v")]
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=936505909]
+transform = Transform3D(0.9950194, 0, 0, 0, 0.9950194, 0, 0, 0, 0.9950194, 0, 0, 0)
 navigation_mesh = SubResource("NavigationMesh_l3n1l")
 
 [node name="Area3D" parent="NavigationRegion3D" unique_id=2119908304 instance=ExtResource("7_lgr22")]
 transform = Transform3D(2, 0, 0, 0, 0.001, 0, 0, 0, 2, 0, 0, 0)
 
-[node name="MeshInstance3D" parent="NavigationRegion3D/Area3D/CollisionShape3D" parent_id_path=PackedInt32Array(2119908304, 805644967) index="0" unique_id=1795663882]
+[node name="CollisionShape3D" parent="NavigationRegion3D/Area3D" index="0" unique_id=805644967]
+transform = Transform3D(2.6154637, 0, 0, 0, 0.9999998, 0, 0, 0, 2.5715346, 0, 0, 0)
+
+[node name="MeshInstance3D" parent="NavigationRegion3D/Area3D/CollisionShape3D" index="0" unique_id=1795663882]
 surface_material_override/0 = SubResource("StandardMaterial3D_trn2v")
 
 [node name="Area3D2" parent="NavigationRegion3D" unique_id=1595563047 instance=ExtResource("7_lgr22")]
-transform = Transform3D(0, -1.0000001, 0, 1.0000001, 0, 0, 0, 0, 1, 8.724537, 0, -3.6662712)
+transform = Transform3D(-6.556708e-08, -13.189002, 0, 1.5, -5.765095e-07, 0, 0, 0, 2.04, 11.274978, 7.290251, -5.7485046)
 
 [node name="Area3D3" parent="NavigationRegion3D" unique_id=905592415 instance=ExtResource("7_lgr22")]
-transform = Transform3D(0, -1.0000001, 0, 1.0000001, 0, 0, 0, 0, 1, -5.535919, 0, 0)
+transform = Transform3D(-6.556708e-08, -20, 0, 1.5, -8.742279e-07, 0, 0, 0, 1, -11.458436, 7.5808196, 0)
 
 [node name="Area3D4" parent="NavigationRegion3D" unique_id=1686252302 instance=ExtResource("7_lgr22")]
 transform = Transform3D(0, -2.9802322e-08, -0.53273314, 1.0000001, 0, 0, 0, -1.0000001, 1.5876685e-08, -2.9694154, 0, -4.6106567)
@@ -61,7 +67,7 @@ transform = Transform3D(0, -2.9802322e-08, -0.53273314, 1.0000001, 0, 0, 0, -1.0
 transform = Transform3D(0, 1.0000001, 7.4098203e-09, 1.0000001, 0, 0, 0, 1.39090695e-08, -0.53273314, -0.19117737, 0, 2.3381817)
 
 [node name="Area3D5" parent="NavigationRegion3D" unique_id=1447154830 instance=ExtResource("7_lgr22")]
-transform = Transform3D(0, 4.3711392e-08, 1, 1.0000001, 0, 0, 0, 1.0000001, -4.371139e-08, 0, 0, -9.717487)
+transform = Transform3D(0, 5.762353e-07, 1.4568697, 2.2152338, 0, 0, 0, 13.182729, -6.368182e-08, 0.7325636, 10.566226, -18.59714)
 
 [node name="HostileHumanoid" parent="." unique_id=1808762767 instance=ExtResource("8_03owx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.635823, 0.81874704, 3.5652947)
