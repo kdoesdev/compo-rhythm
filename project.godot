@@ -14,7 +14,7 @@ config/name="BebopRhythm"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 run/max_fps=240
-config/icon="res://icon.svg"
+config/icon="res://ui/timing/icon.svg"
 
 [audio]
 
@@ -42,14 +42,15 @@ enabled=PackedStringArray("res://addons/godot_midi/plugin.cfg")
 [file_customization]
 
 folder_colors={
-"res://Tests/": "gray",
 "res://addons/": "yellow",
-"res://common/": "green",
+"res://common/": "purple",
 "res://data/": "blue",
 "res://entities/": "orange",
+"res://environment/": "green",
 "res://scripts/": "red",
 "res://sound/": "purple",
 "res://systems/": "pink",
+"res://test/": "gray",
 "res://ui/": "teal"
 }
 

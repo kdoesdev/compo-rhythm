@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bc6cc56ajahdi"]
+
+[ext_resource type="Script" uid="uid://y3sij4fn68lb" path="res://test/test_ui_instantiation_node.gd" id="1_x5dwh"]
+
+[node name="Control" type="Control" unique_id=2054316196 node_paths=PackedStringArray("start_node")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_x5dwh")
+start_node = NodePath("StartNode")
+size_range = Vector2(15, 150)
+"Init Action" = Callable()
+
+[node name="StartNode" type="Control" parent="." unique_id=1591594959]
+anchors_preset = 0
+offset_right = 292.0
+offset_bottom = 115.0

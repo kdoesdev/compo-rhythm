@@ -155,7 +155,6 @@ func add_event_to_track(timing : float, note : Variant) -> BeatEvent:
 	return event
 
 func attempt_events():
-	
 	for timestamp in _queued_events.keys():
 		if _queued_events[timestamp]._status != RuleSet.WindowStatus.OPEN:
 			continue

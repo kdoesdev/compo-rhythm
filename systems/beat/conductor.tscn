@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://dry8gufuf4jb"]
 
 [ext_resource type="MidiResource" uid="uid://efwy3fbbqxwd" path="res://sound/songs/MemphisBlues.mid" id="1_brquv"]
-[ext_resource type="Script" uid="uid://bx07fqttcpv6" path="res://scripts/conductor.gd" id="1_dbxwv"]
+[ext_resource type="Script" uid="uid://bx07fqttcpv6" path="res://systems/beat/conductor.gd" id="1_dbxwv"]
 [ext_resource type="AudioStream" uid="uid://s87cvcol08ys" path="res://sound/effect/beat_missed.wav" id="3_brquv"]
-[ext_resource type="AudioStream" uid="uid://b1cbkpwqahma7" path="res://Perc_MetronomeQuartz_hi.wav" id="3_x67ht"]
+[ext_resource type="AudioStream" uid="uid://b1cbkpwqahma7" path="res://systems/beat/Perc_MetronomeQuartz_hi.wav" id="3_x67ht"]
 [ext_resource type="Resource" uid="uid://cykp2umwlg6gh" path="res://sound/songs/song_spec_swinglounge.tres" id="4_7gg0o"]
-[ext_resource type="Script" uid="uid://dpes0xc1mj66k" path="res://scripts/metronome.gd" id="4_x67ht"]
+[ext_resource type="Script" uid="uid://dpes0xc1mj66k" path="res://systems/beat/metronome.gd" id="4_x67ht"]
 [ext_resource type="AudioStream" uid="uid://dxhtyxi04jqhr" path="res://sound/songs/swinglounge/swing_lounge_click.wav" id="7_brquv"]
 
 [sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_brquv"]

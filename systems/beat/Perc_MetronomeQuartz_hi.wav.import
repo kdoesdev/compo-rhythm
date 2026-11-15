@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://b1cbkpwqahma7"
-path="res://.godot/imported/Perc_MetronomeQuartz_hi.wav-812497d02260463d68888c4f5101e271.sample"
+path="res://.godot/imported/Perc_MetronomeQuartz_hi.wav-0ff94baafe6be6de567f2c3e448274a3.sample"
 
 [deps]
 
-source_file="res://Perc_MetronomeQuartz_hi.wav"
-dest_files=["res://.godot/imported/Perc_MetronomeQuartz_hi.wav-812497d02260463d68888c4f5101e271.sample"]
+source_file="res://systems/beat/Perc_MetronomeQuartz_hi.wav"
+dest_files=["res://.godot/imported/Perc_MetronomeQuartz_hi.wav-0ff94baafe6be6de567f2c3e448274a3.sample"]
 
 [params]
 

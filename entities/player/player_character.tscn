@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dif2dsqo04tmk"]
 
-[ext_resource type="Script" uid="uid://cca2gcntpen8v" path="res://scripts/player_character.gd" id="1_uf0uw"]
+[ext_resource type="Script" uid="uid://cca2gcntpen8v" path="res://entities/player/player_character.gd" id="1_uf0uw"]
 [ext_resource type="Script" uid="uid://8sqaqlde0fhy" path="res://common/interpolate_position.gd" id="2_5up26"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_dpbyw"]

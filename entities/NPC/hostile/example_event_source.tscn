@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dkiepfhbgdh3q"]
 
-[ext_resource type="Script" uid="uid://d4ngh8c0cmmht" path="res://scripts/example_event_source.gd" id="1_t2oga"]
+[ext_resource type="Script" uid="uid://d4ngh8c0cmmht" path="res://systems/beat/example_event_source.gd" id="1_t2oga"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_sgvrc"]
 
