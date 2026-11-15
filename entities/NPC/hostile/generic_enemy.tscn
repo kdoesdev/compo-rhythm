@@ -21,6 +21,9 @@ shader_parameter/impact_position = Vector3(0.5, 0.965, 0)
 
 [node name="HostileHumanoid" type="CharacterBody3D" unique_id=1808762767 node_paths=PackedStringArray("mesh")]
 script = ExtResource("1_tmm4x")
+path_update_rate = null
+lock_on_time = null
+beat_combo = null
 mesh = NodePath("Dissolvable")
 
 [node name="Dissolvable" parent="." unique_id=1344224893 instance=ExtResource("2_h4g5p")]

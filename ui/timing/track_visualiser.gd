@@ -23,6 +23,7 @@ func _process(delta: float) -> void:
 
 func visulise_event(event : BeatEvent):
 	event.result.connect(show_result)
+	event.update.connect(show_status)
 	var event_visual : BeatEventVisual = visual_template.instantiate()
 	track.add_child(event_visual)
 	event_visual.anchor_left = 0.5
@@ -36,6 +37,10 @@ func visulise_event(event : BeatEvent):
 	events.get_or_add(event, event_visual)
 	pass
 	
+func show_status(event : BeatEvent, status : RuleSet.WindowStatus):
+	var event_visual : BeatEventVisual = events.get(event)
+	event_visual.show_status(status)
+
 func show_result(event : BeatEvent, result : RuleSet.EventResult):
 	var event_visual : BeatEventVisual = events.get(event)
 	event_visual.show_result(result)

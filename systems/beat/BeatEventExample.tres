@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="BeatEvent" format=3 uid="uid://jtr66oels5gh"]
-
-[ext_resource type="Script" uid="uid://da56p2fwe2g7d" path="res://scripts/beat_event.gd" id="1_7j4jb"]
-
-[resource]
-script = ExtResource("1_7j4jb")
-metadata/_custom_type_script = "uid://da56p2fwe2g7d"

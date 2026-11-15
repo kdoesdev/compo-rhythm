@@ -26,6 +26,9 @@ class VisionStatus:
 @export var inner_radius : float = 5
 @export var outer_radius : float = 10
 
+@export var can_lose_sight : bool = true
+@export var render : bool = true
+
 
 @export_flags_3d_physics var sight_mask : int = 0
 
@@ -36,9 +39,13 @@ func _ready() -> void:
 	visual_cone.construct_vision_field(fov, inner_radius)
 
 func _process(_delta: float) -> void:
-	visual_cone.update_vision_field(fov, inner_radius)
-	var cone_mesh : ShaderMaterial = visual_cone.material_override
-	cone_mesh.set_shader_parameter("origin", Vector2(-global_position.x, global_position.z))
+	if render:
+		visual_cone.visible = true
+		visual_cone.update_vision_field(fov, inner_radius)
+		var cone_mesh : ShaderMaterial = visual_cone.material_override
+		cone_mesh.set_shader_parameter("origin", Vector2(-global_position.x, global_position.z))
+	else:
+		visual_cone.visible = false
 	
 func _physics_process(_delta: float) -> void:
 	for status in detectable_entities.values():

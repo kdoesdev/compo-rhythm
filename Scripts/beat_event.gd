@@ -1,4 +1,4 @@
-extends Resource
+extends RefCounted
 
 class_name BeatEvent
 
@@ -15,6 +15,3 @@ static func create(time : float, note : Variant) -> BeatEvent:
 	instance.time = time
 	instance.note = note
 	return instance
-	
-class event_spec:
-	var is_vulnerable : bool = false

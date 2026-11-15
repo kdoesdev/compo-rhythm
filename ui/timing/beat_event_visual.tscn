@@ -1,15 +1,17 @@
 [gd_scene format=3 uid="uid://5fj4r3ump32d"]
 
 [ext_resource type="Script" uid="uid://d0d0md4pkp8up" path="res://ui/timing/beat_event_visual.gd" id="1_be42j"]
-[ext_resource type="Texture2D" uid="uid://d0ywrrc8lsr74" path="res://icon.svg" id="2_v5aiw"]
+[ext_resource type="Texture2D" uid="uid://c46xvf1efpphd" path="res://common/effects/perlin_noise.png" id="2_v5aiw"]
 
 [node name="BeatEventVisual" type="Control" unique_id=782653950]
+self_modulate = Color(1, 1, 1, 0.27450982)
 show_behind_parent = true
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_be42j")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1265840222]
+self_modulate = Color(1, 1, 1, 0.21568628)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

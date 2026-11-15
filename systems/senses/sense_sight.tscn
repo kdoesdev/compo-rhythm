@@ -107,6 +107,7 @@ collision_layer = 0
 collision_mask = 8
 script = ExtResource("1_k828j")
 fov = 120.0
+render = false
 sight_mask = 10
 
 [node name="InnerRadius" type="CollisionShape3D" parent="." unique_id=665333829]

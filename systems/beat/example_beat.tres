@@ -1,9 +1,8 @@
 [gd_resource type="Resource" script_class="BeatEventSpec" format=3 uid="uid://nsn7agwwuhmb"]
 
 [ext_resource type="Script" uid="uid://c8pyem3rjnkrx" path="res://systems/beat/beat_event_spec.gd" id="1_m5fxb"]
-[ext_resource type="AudioStream" uid="uid://b33wm7i01tusg" path="res://sound/effect/beat_hit.wav" id="1_w02sw"]
 
 [resource]
 script = ExtResource("1_m5fxb")
-hit_sound = ExtResource("1_w02sw")
+delta = 0.45
 metadata/_custom_type_script = "uid://c8pyem3rjnkrx"

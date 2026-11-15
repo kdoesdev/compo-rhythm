@@ -45,6 +45,7 @@ folder_colors={
 "res://Tests/": "gray",
 "res://addons/": "yellow",
 "res://common/": "green",
+"res://data/": "blue",
 "res://entities/": "orange",
 "res://scripts/": "red",
 "res://sound/": "purple",

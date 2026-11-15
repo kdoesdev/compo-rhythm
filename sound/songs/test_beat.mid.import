@@ -1,0 +1,14 @@
+[remap]
+
+importer="com.nlaha.godotmidi"
+type="MidiResource"
+uid="uid://p522bnemwqxw"
+path="res://.godot/imported/test_beat.mid-37e3ac5236486106cce4adfc862a87f6.res"
+
+[deps]
+
+source_file="res://sound/songs/test_beat.mid"
+dest_files=["res://.godot/imported/test_beat.mid-37e3ac5236486106cce4adfc862a87f6.res"]
+
+[params]
+

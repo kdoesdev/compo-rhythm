@@ -1,13 +1,9 @@
 [gd_resource type="Resource" script_class="BeatCombo" format=3 uid="uid://bnc2c2ostesi6"]
 
+[ext_resource type="MidiResource" uid="uid://p522bnemwqxw" path="res://sound/songs/test_beat.mid" id="1_5v5ij"]
 [ext_resource type="Script" uid="uid://dj75fgx5drx3u" path="res://systems/beat/beat_combo.gd" id="1_jdkqf"]
-[ext_resource type="Script" uid="uid://c8pyem3rjnkrx" path="res://systems/beat/beat_event_spec.gd" id="2_bdcvf"]
-[ext_resource type="Resource" uid="uid://nsn7agwwuhmb" path="res://systems/beat/example_beat.tres" id="3_tv834"]
 
 [resource]
 script = ExtResource("1_jdkqf")
-timings = Dictionary[float, ExtResource("2_bdcvf")]({
-0.0: ExtResource("3_tv834"),
-1.0: ExtResource("3_tv834")
-})
+midi = ExtResource("1_5v5ij")
 metadata/_custom_type_script = "uid://dj75fgx5drx3u"

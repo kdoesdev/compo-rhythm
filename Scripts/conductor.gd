@@ -156,11 +156,12 @@ func add_event_to_track(timing : float, note : Variant) -> BeatEvent:
 
 func attempt_events():
 	
-	for timestamp in _queued_events:
+	for timestamp in _queued_events.keys():
 		if _queued_events[timestamp]._status != RuleSet.WindowStatus.OPEN:
-			return
+			continue
 			
 		var timing_result := get_timing_result(timestamp)
+		print("timing_result: " + str(timing_result))
 		for beat_event in _queued_events.get(timestamp).events as Array[BeatEvent]:
 			beat_event.result.emit(beat_event, timing_result)
 			_queued_events.erase(timestamp)
@@ -191,28 +192,28 @@ func attempt_events():
 			#player.play()
 
 func process_beat():
-	for event_beat in _queued_events:
+	for event_timing in _queued_events:
 		
-		var time_diff_ms : float = abs(get_time_diff_ms(event_beat))
+		var time_diff_ms : float = abs(get_time_diff_ms(event_timing))
 		var new_status := get_beat_status_from_ms(time_diff_ms)
 		
-		if _queued_events[event_beat]._status == new_status:
+		if _queued_events[event_timing]._status == new_status:
 			continue
 		
-		_queued_events[event_beat].UpdateStatus(new_status)
+		_queued_events[event_timing].UpdateStatus(new_status)
 		if (new_status == RuleSet.WindowStatus.CLOSED && time_diff_ms > 0):
-			for event in _queued_events[event_beat].events:
+			for event in _queued_events[event_timing].events:
 				event.result.emit(event, RuleSet.EventResult.MISSED)
-				_queued_events.erase(event_beat)
+				_queued_events.erase(event_timing)
 				#sound_hit_player.stream = sound_missed
 				sound_hit_player.play()
 
-func get_timing_result(event_beat : float) -> RuleSet.EventResult:
-	var time_diff_ms : float = abs(get_time_diff_ms(event_beat))
+func get_timing_result(timing : float) -> RuleSet.EventResult:
+	var time_diff_ms : float = abs(get_time_diff_ms(timing))
 	for timing_window in RuleSet.timing_windows_ms:
 		if time_diff_ms <= timing_window:
 			return RuleSet.timing_windows_ms[timing_window]
-			
+		
 	return RuleSet.EventResult.MAX
 
 func get_beat_status(event_beat : float) -> RuleSet.WindowStatus:
@@ -241,23 +242,38 @@ func update_beat_timings(delta : float):
 		time += delta
 		
 func queue_fx(track : int):
+	if !_is_valid_track(track):
+		return
+	
 	track_fx[track] += 1
 	if wants_fx[track] == true:
 		var synced := main_track.stream as AudioStreamSynchronized
 		synced.set_sync_stream_volume(track, 0)
 	
 func try_fx(track : int):
+	if !_is_valid_track(track):
+		return
+		
+	if !track_fx.has(track):
+		return
+	
 	if track_fx[track] > 0:
 		var synced := main_track.stream as AudioStreamSynchronized
 		synced.set_sync_stream_volume(track, 0)
 	wants_fx[track] = true
 
 func duck_fx(track : int):
+	if !_is_valid_track(track):
+		return
+	
 	var synced := main_track.stream as AudioStreamSynchronized
 	synced.set_sync_stream_volume(track, -80)
 	wants_fx[track] = false
 
 func pop_fx(track : int, pop_all : bool = false):
+	if !_is_valid_track(track):
+		return
+	
 	if pop_all:
 		track_fx[track] = 0
 	else:
@@ -268,3 +284,11 @@ func pop_fx(track : int, pop_all : bool = false):
 		var synced := main_track.stream as AudioStreamSynchronized
 		synced.set_sync_stream_volume(track, -80)
 		wants_fx[track] = false
+
+func _is_valid_track(track : int) -> bool:
+	if track <= 0:
+		return false
+	if !track_names.has(track):
+		return false
+	
+	return true

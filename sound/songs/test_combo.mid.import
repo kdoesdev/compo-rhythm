@@ -1,0 +1,14 @@
+[remap]
+
+importer="com.nlaha.godotmidi"
+type="MidiResource"
+uid="uid://dq0twg251asul"
+path="res://.godot/imported/test_combo.mid-cd39fc9b7ee77ce2c0d8a51700035bb8.res"
+
+[deps]
+
+source_file="res://sound/songs/test_combo.mid"
+dest_files=["res://.godot/imported/test_combo.mid-cd39fc9b7ee77ce2c0d8a51700035bb8.res"]
+
+[params]
+
