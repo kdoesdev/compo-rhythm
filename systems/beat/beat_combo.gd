@@ -5,7 +5,6 @@ class_name BeatCombo
 @export var midi : MidiResource
 
 func get_notes() -> Array[Variant]:
-	print(midi.tracks)
 	var notes : Array[Variant]
 	for event in midi.tracks[0]['events']:
 		if event['type'] == 'note' && event['subtype'] == 8:

@@ -13,7 +13,10 @@ var track_fx : Dictionary[int, int]
 var wants_fx : Dictionary[int, bool]
 
 # [delta, time]
-var section_times : Dictionary[float, float]
+var section_times : Dictionary[StringName, int]
+
+var current_section_start : int = 0
+var current_section : StringName
 
 var want_next_section : bool = false
 
@@ -56,7 +59,7 @@ func _ready():
 		return
 	
 	#print(midi.tracks)
-	var section_time : float = 0
+	var section_time : int = 0
 	for track in midi.get_tracks():
 		# first track contains song meta
 		# set the tempo (plugin currently fails to do this for you)
@@ -66,9 +69,9 @@ func _ready():
 					81:
 						midi.set_tempo(event['data'])
 					6:
-						var delta = event['delta']
+						var delta : int = event['delta']
 						section_time += delta
-						section_times.get_or_add(delta, section_time)
+						section_times.get_or_add(event['data'], section_time)
 			continue
 			
 		# Note events won't contain the track name
@@ -99,25 +102,34 @@ func _process(_delta: float) -> void:
 func meta_event(event, _track):
 	if event['subtype'] != 6:
 		return
-	var marker_name : String = event['data']
+	var marker_name : StringName = event['data']
 	
 	print(marker_name)
 	
 	if marker_name.contains('Section'):
-		var delta : float = event['delta']
-		print("delta: " + str(delta))
-		var time : float = section_times.get(delta)
-		print("time: " + str(time))
-		if delta == 0:
+		
+		# scenario: resetting to previous section start immediatly triggers its marker
+		if marker_name == current_section:
 			return
 		
-		if !want_next_section:
-			var prev_time : float = (time - delta) / 1000 / bpm * 60
+		var delta : int = event['delta']
+		print("next section delta: " + str(delta))
+		print("next section time: " + str(current_section_start + delta))
+		
+		if delta == 0:
+			want_next_section = true
+		
+		if want_next_section:
+			current_section = marker_name
+			current_section_start = section_times[current_section]
+			want_next_section = false
+		else:
+			var seconds_per_tick : float = float(midi.tempo) / midi.division / 1000000.0;
+			var prev_time : float = float(current_section_start) * seconds_per_tick
 			
-			print("setting time: " + str(prev_time))
+			print("setting time: " + str(prev_time) + " section : " +  current_section)
 			main_track.seek(prev_time)
 			set_current_time(prev_time)
-			update_beat_timings(0)
 
 func note_event(event, _track):
 	var note : int = event['note']
@@ -135,7 +147,7 @@ func note_event(event, _track):
 	#player.play()
 	#player.finished.connect(player.queue_free)
 
-	#print("[Track: " + str(track_name) + "] Note played: " + str(event['note'] ))
+	# print("[Track: " + str(_track) + "] Note played: " + str(event['note'] ))
 
 func get_queued_events() -> Dictionary[float, BeatEvents]:
 	return _queued_events
@@ -232,14 +244,6 @@ func get_beat_status_from_ms(time_diff_ms : float) -> RuleSet.WindowStatus:
 		
 	return RuleSet.WindowStatus.CLOSED
 	
-func update_beat_timings(delta : float):
-	for time in _queued_events:
-		var beat_events : BeatEvents = _queued_events[time]
-		for event in beat_events.events:
-			event.time += delta
-		
-		time += delta
-		
 func queue_fx(track : int):
 	if !_is_valid_track(track):
 		return
