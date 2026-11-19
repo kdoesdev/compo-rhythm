@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="BeatCombo" format=3 uid="uid://dwne0p1so61e6"]
 
+[ext_resource type="MidiResource" uid="uid://p522bnemwqxw" path="res://sound/songs/test_beat.mid" id="1_jd4ff"]
 [ext_resource type="Script" uid="uid://dj75fgx5drx3u" path="res://systems/beat/beat_combo.gd" id="1_rherb"]
 
 [resource]
 script = ExtResource("1_rherb")
-timings = Array[Object]([null, null, null])
+midi = ExtResource("1_jd4ff")
 metadata/_custom_type_script = "uid://dj75fgx5drx3u"

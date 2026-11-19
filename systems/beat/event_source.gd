@@ -1,4 +1,4 @@
-extends Node
+extends Node3D
 
 class_name EventSource
 
@@ -10,18 +10,27 @@ var status : RuleSet.WindowStatus
 
 var is_active : bool = false
 
+var is_ready : bool = false
+
 @export var combo : BeatCombo
-
-
 
 @export var mesh : MeshInstance3D
 
-# the beats that are queued up
-@export var beat_combo : int = 1
-	
+signal finished
+
+func _ready() -> void:
+	process_mode = PROCESS_MODE_DISABLED
+
+func init(spec : EventEntitySpec):
+	combo = spec.combo
+	is_ready = true
+	process_mode = PROCESS_MODE_INHERIT
+
 func process_beat_event(event : BeatEvent, result : RuleSet.EventResult):
 	print("processing beat event, result: ",  RuleSet.EventResult.keys()[result])
 	events.erase(event.time)
+	if events.is_empty() && result != RuleSet.EventResult.MISSED:
+		finished.emit()
 	
 func process_status_update(_event : BeatEvent, new_status: RuleSet.WindowStatus):
 	var color := RuleSet.timing_feedback_color[new_status]
@@ -30,6 +39,10 @@ func process_status_update(_event : BeatEvent, new_status: RuleSet.WindowStatus)
 		material.albedo_color = color
 		
 func queue_events():
+
+	if !is_ready:
+		return
+
 	var notes : Array[Variant]
 	var time : float = -1
 	
@@ -45,9 +58,7 @@ func queue_events():
 	for note in notes:
 		time = note["time"] if note.has('time') else time + (note['delta'] / 1000)
 		var event : BeatEvent = Conductor.add_event_to_track(time, note)
-		if !event:
-			#TODO: don't let this fail silently
-			continue
+		assert(event)
 		
 		event.result.connect(process_beat_event)
 		event.update.connect(process_status_update)
