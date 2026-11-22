@@ -21,9 +21,10 @@ var current_section : StringName
 var want_next_section : bool = false
 
 signal song_started
+signal time_changed(new_time : float, delta_seconds : float)
 signal event_added(event : BeatEvent)
 
-class BeatEvents:
+class EventTiming:
 	func UpdateStatus(new_status : RuleSet.WindowStatus):
 		_status = new_status
 		for event in events:
@@ -32,7 +33,7 @@ class BeatEvents:
 	var events : Array[BeatEvent] = []
 
 # all events that have been queued up [time][events]
-var _queued_events : Dictionary[float, BeatEvents]
+var _timings : Dictionary[float, EventTiming]
 
 var bpm : float
 
@@ -128,6 +129,9 @@ func meta_event(event, _track):
 			var prev_time : float = float(current_section_start) * seconds_per_tick
 			
 			print("setting time: " + str(prev_time) + " section : " +  current_section)
+			var delta_seconds : float = delta * seconds_per_tick
+			update_beat_timings(-delta_seconds)
+			time_changed.emit(prev_time, -delta_seconds)
 			main_track.seek(prev_time)
 			set_current_time(prev_time)
 
@@ -149,13 +153,13 @@ func note_event(event, _track):
 
 	# print("[Track: " + str(_track) + "] Note played: " + str(event['note'] ))
 
-func get_queued_events() -> Dictionary[float, BeatEvents]:
-	return _queued_events
+func get_queued_events() -> Dictionary[float, EventTiming]:
+	return _timings
 
 # The timing track is an updatable list of ACTIVE beat events
 func add_event(event: BeatEvent):
-	_queued_events.get_or_add(event.time, BeatEvents.new())
-	_queued_events[event.time].events.append(event)
+	_timings.get_or_add(event.time, EventTiming.new())
+	_timings[event.time].events.append(event)
 	event_added.emit(event)
 
 func add_event_to_track(timing : float, note : Variant) -> BeatEvent:
@@ -167,15 +171,15 @@ func add_event_to_track(timing : float, note : Variant) -> BeatEvent:
 	return event
 
 func attempt_events():
-	for timestamp in _queued_events.keys():
-		if _queued_events[timestamp]._status != RuleSet.WindowStatus.OPEN:
+	for events_at_time in _timings:
+		if _timings[events_at_time]._status != RuleSet.WindowStatus.OPEN:
 			continue
 			
-		var timing_result := get_timing_result(timestamp)
+		var timing_result := get_timing_result(events_at_time)
 		print("timing_result: " + str(timing_result))
-		for beat_event in _queued_events.get(timestamp).events as Array[BeatEvent]:
+		for beat_event in _timings.get(events_at_time).events as Array[BeatEvent]:
 			beat_event.result.emit(beat_event, timing_result)
-			_queued_events.erase(timestamp)
+			_timings.erase(events_at_time)
 	
 			#var track_name : String = Conductor.track_names.get(beat_event.note['track'])
 			#var sound : AudioStreamWAV = load("res://sound/songs/" + track_name + ".wav")
@@ -203,19 +207,19 @@ func attempt_events():
 			#player.play()
 
 func process_beat():
-	for event_timing in _queued_events:
+	for event_timing in _timings:
 		
 		var time_diff_ms : float = abs(get_time_diff_ms(event_timing))
 		var new_status := get_beat_status_from_ms(time_diff_ms)
 		
-		if _queued_events[event_timing]._status == new_status:
+		if _timings[event_timing]._status == new_status:
 			continue
 		
-		_queued_events[event_timing].UpdateStatus(new_status)
+		_timings[event_timing].UpdateStatus(new_status)
 		if (new_status == RuleSet.WindowStatus.CLOSED && time_diff_ms > 0):
-			for event in _queued_events[event_timing].events:
+			for event in _timings[event_timing].events:
 				event.result.emit(event, RuleSet.EventResult.MISSED)
-				_queued_events.erase(event_timing)
+				_timings.erase(event_timing)
 				#sound_hit_player.stream = sound_missed
 				sound_hit_player.play()
 
@@ -295,3 +299,14 @@ func _is_valid_track(track : int) -> bool:
 		return false
 	
 	return true
+
+func update_beat_timings(delta : float):
+	for time in _timings.keys():
+		var new_time : float = time + delta
+		var beat_events : EventTiming = _timings[time]
+		for event in beat_events.events:
+			event.time = new_time
+		var timing : EventTiming = _timings[time]
+		_timings.erase(time)
+		_timings.get_or_add(new_time, timing)
+	print("new timings: ", _timings)

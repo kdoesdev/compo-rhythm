@@ -4,7 +4,7 @@ class_name EventSource
 
 # an event source will send out BeatEvent(s) to be responded to by the player or world
 
-var events : Dictionary[float, BeatEvent]
+var events : Array[BeatEvent]
 
 var status : RuleSet.WindowStatus
 
@@ -28,7 +28,7 @@ func init(spec : EventEntitySpec):
 
 func process_beat_event(event : BeatEvent, result : RuleSet.EventResult):
 	print("processing beat event, result: ",  RuleSet.EventResult.keys()[result])
-	events.erase(event.time)
+	events.erase(event)
 	if events.is_empty() && result != RuleSet.EventResult.MISSED:
 		finished.emit()
 	
@@ -62,7 +62,7 @@ func queue_events():
 		
 		event.result.connect(process_beat_event)
 		event.update.connect(process_status_update)
-		events.get_or_add(event.time, event)
+		events.append(event)
 	is_active = true
 
 func _get_notes_from_combo():

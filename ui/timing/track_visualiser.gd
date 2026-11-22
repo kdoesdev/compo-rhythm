@@ -5,21 +5,27 @@ extends Control
 @onready var track : Control = $Track/Beats
 
 var events : Dictionary[BeatEvent, BeatEventVisual]
+var finished_events : Dictionary[BeatEvent, BeatEventVisual]
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Conductor.event_added.connect(visulise_event)
+	Conductor.time_changed.connect(update_time)
 	
 	# in case there are already events
-	for event in Conductor.get_queued_events().keys():
-		visulise_event(event)
+	for timing in Conductor.get_queued_events().values():
+		for event in timing.events:
+			visulise_event(event)
 		
 func _process(delta: float) -> void:
 	for event in events:
-		var time_diff : float = Conductor.get_time_diff_ms(event.time)
 		var visual := events.get(event) as BeatEventVisual
-
-		visual.set_position(Vector2(time_diff/10, visual.position.y))
+		update_position(event, visual)
+	
+	for finished_event in finished_events:
+		var visual := finished_events.get(finished_event) as BeatEventVisual
+		update_position(finished_event, visual)
 
 func visulise_event(event : BeatEvent):
 	event.result.connect(show_result)
@@ -36,7 +42,11 @@ func visulise_event(event : BeatEvent):
 	event_visual.offset_bottom = 0
 	events.get_or_add(event, event_visual)
 	pass
-	
+
+func update_position(event : BeatEvent, visual : BeatEventVisual):
+	var time_diff : float = Conductor.get_time_diff_ms(event.time)
+	visual.set_position(Vector2(time_diff/10, visual.position.y))
+
 func show_status(event : BeatEvent, status : RuleSet.WindowStatus):
 	var event_visual : BeatEventVisual = events.get(event)
 	event_visual.show_status(status)
@@ -44,7 +54,12 @@ func show_status(event : BeatEvent, status : RuleSet.WindowStatus):
 func show_result(event : BeatEvent, result : RuleSet.EventResult):
 	var event_visual : BeatEventVisual = events.get(event)
 	event_visual.show_result(result)
-	await get_tree().create_timer(2).timeout
 	events.erase(event)
+	finished_events.get_or_add(event, event_visual)
+	await get_tree().create_timer(2).timeout
+	finished_events.erase(event)
 	event_visual.queue_free()
-	pass
+
+func update_time(new_time : float, delta : float):
+	for event in finished_events:
+		event.time += delta
