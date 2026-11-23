@@ -15,13 +15,18 @@ var wants_fx : Dictionary[int, bool]
 # [delta, time]
 var section_times : Dictionary[StringName, int]
 
-var current_section_start : int = 0
-var current_section : StringName
+var _current_section_start : int = 0
+var _current_section : StringName
+var _section_index : int = 0
+
+func get_section_idx() -> int:
+	return _section_index
 
 var want_next_section : bool = false
 
 signal song_started
 signal time_changed(new_time : float, delta_seconds : float)
+signal section_changed(new_section : String, section_index : int)
 signal event_added(event : BeatEvent)
 
 class EventTiming:
@@ -110,25 +115,27 @@ func meta_event(event, _track):
 	if marker_name.contains('Section'):
 		
 		# scenario: resetting to previous section start immediatly triggers its marker
-		if marker_name == current_section:
+		if marker_name == _current_section:
 			return
 		
 		var delta : int = event['delta']
 		print("next section delta: " + str(delta))
-		print("next section time: " + str(current_section_start + delta))
+		print("next section time: " + str(_current_section_start + delta))
 		
 		if delta == 0:
 			want_next_section = true
 		
 		if want_next_section:
-			current_section = marker_name
-			current_section_start = section_times[current_section]
+			_current_section = marker_name
+			_current_section_start = section_times[_current_section]
+			_section_index += 1
+			section_changed.emit(_current_section, _section_index)
 			want_next_section = false
 		else:
 			var seconds_per_tick : float = float(midi.tempo) / midi.division / 1000000.0;
-			var prev_time : float = float(current_section_start) * seconds_per_tick
+			var prev_time : float = float(_current_section_start) * seconds_per_tick
 			
-			print("setting time: " + str(prev_time) + " section : " +  current_section)
+			print("setting time: " + str(prev_time) + " section : " +  _current_section, "index: ", _section_index)
 			var delta_seconds : float = delta * seconds_per_tick
 			update_beat_timings(-delta_seconds)
 			time_changed.emit(prev_time, -delta_seconds)
