@@ -30,7 +30,11 @@ signal section_changed(new_section : String, section_index : int)
 signal event_added(event : BeatEvent)
 
 class EventTiming:
-	func UpdateStatus(new_status : RuleSet.WindowStatus):
+	func update_telegraph(alpha : float):
+		for event in events:
+			event.telegraph_alpha = alpha
+		
+	func update_status(new_status : RuleSet.WindowStatus):
 		_status = new_status
 		for event in events:
 			event.update.emit(event, _status)
@@ -182,8 +186,7 @@ func attempt_events():
 		if _timings[events_at_time]._status != RuleSet.WindowStatus.OPEN:
 			continue
 			
-		var timing_result := get_timing_result(events_at_time)
-		print("timing_result: " + str(timing_result))
+		var timing_result : RuleSet.EventResult = get_timing_result(events_at_time)
 		for beat_event in _timings.get(events_at_time).events as Array[BeatEvent]:
 			beat_event.result.emit(beat_event, timing_result)
 			_timings.erase(events_at_time)
@@ -214,19 +217,23 @@ func attempt_events():
 			#player.play()
 
 func process_beat():
-	for event_timing in _timings:
+	for timing in _timings:
 		
-		var time_diff_ms : float = abs(get_time_diff_ms(event_timing))
-		var new_status := get_beat_status_from_ms(time_diff_ms)
+		var time_diff_ms : float = abs(get_time_diff_ms(timing))
+		var new_status : RuleSet.WindowStatus = get_beat_status_from_ms(time_diff_ms)
 		
-		if _timings[event_timing]._status == new_status:
+		var event_timing := _timings[timing]
+		var alpha : float = RuleSet.telegraph_curve.sample(time_diff_ms)
+		event_timing.update_telegraph(alpha)
+		
+		if event_timing._status == new_status:
 			continue
 		
-		_timings[event_timing].UpdateStatus(new_status)
+		event_timing.update_status(new_status)
 		if (new_status == RuleSet.WindowStatus.CLOSED && time_diff_ms > 0):
-			for event in _timings[event_timing].events:
+			for event in event_timing.events:
 				event.result.emit(event, RuleSet.EventResult.MISSED)
-				_timings.erase(event_timing)
+				_timings.erase(timing)
 				#sound_hit_player.stream = sound_missed
 				sound_hit_player.play()
 

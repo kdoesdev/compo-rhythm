@@ -1,21 +1,19 @@
 [gd_scene format=3 uid="uid://dry8gufuf4jb"]
 
-[ext_resource type="MidiResource" uid="uid://efwy3fbbqxwd" path="res://sound/songs/MemphisBlues.mid" id="1_brquv"]
 [ext_resource type="Script" uid="uid://bx07fqttcpv6" path="res://systems/beat/conductor.gd" id="1_dbxwv"]
 [ext_resource type="AudioStream" uid="uid://s87cvcol08ys" path="res://sound/effect/beat_missed.wav" id="3_brquv"]
+[ext_resource type="Resource" uid="uid://b5jmemy4ui2s7" path="res://sound/songs/theme_01/song_spec_theme_01.tres" id="3_qtmfa"]
 [ext_resource type="AudioStream" uid="uid://b1cbkpwqahma7" path="res://systems/beat/Perc_MetronomeQuartz_hi.wav" id="3_x67ht"]
-[ext_resource type="Resource" uid="uid://cykp2umwlg6gh" path="res://sound/songs/song_spec_swinglounge.tres" id="4_7gg0o"]
 [ext_resource type="Script" uid="uid://dpes0xc1mj66k" path="res://systems/beat/metronome.gd" id="4_x67ht"]
 [ext_resource type="AudioStream" uid="uid://dxhtyxi04jqhr" path="res://sound/songs/swinglounge/swing_lounge_click.wav" id="7_brquv"]
 
 [sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_brquv"]
 
 [node name="MidiPlayer" type="MidiPlayer" unique_id=1334300929]
-midi = ExtResource("1_brquv")
 auto_stop = false
 script = ExtResource("1_dbxwv")
 sound_missed = ExtResource("3_brquv")
-song_spec = ExtResource("4_7gg0o")
+song_spec = ExtResource("3_qtmfa")
 
 [node name="MainTrack" type="AudioStreamPlayer" parent="." unique_id=40932846]
 stream = SubResource("AudioStreamSynchronized_brquv")

@@ -1,0 +1,14 @@
+[remap]
+
+importer="com.nlaha.godotmidi"
+type="MidiResource"
+uid="uid://c8ojjj3qpsjyk"
+path="res://.godot/imported/theme_01.mid-17ef070bcaf739ec6544098e8a80f170.res"
+
+[deps]
+
+source_file="res://sound/songs/theme_01/theme_01.mid"
+dest_files=["res://.godot/imported/theme_01.mid-17ef070bcaf739ec6544098e8a80f170.res"]
+
+[params]
+

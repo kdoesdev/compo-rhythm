@@ -11,6 +11,9 @@ extends EventSource
 
 ## the time spent locked onto a target before an attack can occur
 @export var lock_on_time : float = 1
+
+@export var _should_dissolve : bool = true 
+
 var time_locked_on : float = 0
 
 var is_alive : bool = true
@@ -66,6 +69,12 @@ func look_at_target():
 		return
 	body.look_at(pos)
 
+func _process(delta: float) -> void:
+	super(delta)
+	var material := mesh.material_overlay as ShaderMaterial
+	material.set_shader_parameter('alpha', telegraph_intensity)
+	material.set_shader_parameter('color', RuleSet.telegraph_gradient.sample(telegraph_intensity))
+
 func entity_sight_updated(entity: Node3D, can_see: bool):
 	if !can_see:
 		poi = entity.global_position
@@ -83,8 +92,10 @@ func hit():
 	if !is_alive:
 		return
 	is_alive = false
-	mesh.dissolve_finished.connect(destroy)
-	mesh.dissolve(body.global_position)
+	if (_should_dissolve):
+		mesh.dissolve_finished.connect(destroy)
+		mesh.dissolve(body.global_position)
+	else: destroy()
 
 func destroy():
 	queue_free()

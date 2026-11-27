@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bomv4sd3jago7"]
+
+[ext_resource type="Script" uid="uid://jrhwhdiww15m" path="res://systems/world/ruleset.gd" id="1_glav0"]
+[ext_resource type="Curve" uid="uid://dcenw6j0asmmb" path="res://data/beat/telegraph_curve.tres" id="2_cxrs6"]
+[ext_resource type="Gradient" uid="uid://cxo11ai3uor6h" path="res://data/beat/telegraph_gradient.tres" id="3_v35xn"]
+
+[node name="RuleSet" type="ResourcePreloader" unique_id=625419334]
+script = ExtResource("1_glav0")
+telegraph_curve = ExtResource("2_cxrs6")
+telegraph_gradient = ExtResource("3_v35xn")

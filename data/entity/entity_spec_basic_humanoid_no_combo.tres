@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="EventEntitySpec" format=3 uid="uid://bb2f6fn7i3wbo"]
+
+[ext_resource type="PackedScene" uid="uid://cran6pes5ikt0" path="res://entities/NPC/hostile/humanoid_entity.tscn" id="1_45uce"]
+[ext_resource type="Script" uid="uid://bn6m4hepmufrh" path="res://systems/entity/event_entity_spec.gd" id="1_pjyuc"]
+
+[resource]
+script = ExtResource("1_pjyuc")
+entity = ExtResource("1_45uce")
+metadata/_custom_type_script = "uid://bn6m4hepmufrh"

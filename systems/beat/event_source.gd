@@ -12,6 +12,9 @@ var is_active : bool = false
 
 var is_ready : bool = false
 
+# eases in and out based on closeness to a beat
+@export var telegraph_intensity : float = 0
+
 @export var combo : BeatCombo
 
 @export var mesh : MeshInstance3D
@@ -19,12 +22,20 @@ var is_ready : bool = false
 signal finished
 
 func _ready() -> void:
-	process_mode = PROCESS_MODE_DISABLED
+	set_process(true)
+	process_mode = PROCESS_MODE_ALWAYS
+	
+func _process(delta: float) -> void:
+	var new_intensity : float = 0
+	for event in events:
+		new_intensity = maxf(event.telegraph_alpha, new_intensity)
+	
+	telegraph_intensity = new_intensity
 
 func init(spec : EventEntitySpec):
 	combo = spec.combo
 	is_ready = true
-	process_mode = PROCESS_MODE_INHERIT
+	# process_mode = PROCESS_MODE_PAUSABLE
 
 func process_beat_event(event : BeatEvent, result : RuleSet.EventResult):
 	print("processing beat event, result: ",  RuleSet.EventResult.keys()[result])
@@ -33,10 +44,7 @@ func process_beat_event(event : BeatEvent, result : RuleSet.EventResult):
 		finished.emit()
 	
 func process_status_update(_event : BeatEvent, new_status: RuleSet.WindowStatus):
-	var color := RuleSet.timing_feedback_color[new_status]
-	var material := mesh.get_active_material(0)
-	if material is StandardMaterial3D:
-		material.albedo_color = color
+	status = new_status
 		
 func queue_events():
 

@@ -18,10 +18,11 @@ shader_parameter/burn_color = Color(1, 0, 0, 1)
 shader_parameter/impact_position = Vector3(0.5, 0.965, 0)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mpfnf"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_wb7wg")
 height = 1.8
 
 [node name="Dissolvable" type="MeshInstance3D" unique_id=1344224893]
-material_override = SubResource("ShaderMaterial_wb7wg")
 mesh = SubResource("CapsuleMesh_mpfnf")
 script = ExtResource("1_ltv3a")
 metadata/_custom_type_script = "uid://cfwimf5qmbvbb"

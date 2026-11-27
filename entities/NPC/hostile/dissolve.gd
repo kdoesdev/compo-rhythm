@@ -15,12 +15,12 @@ func _process(delta: float) -> void:
 	
 	if dissolve_started:
 		dissolve_progress += delta * time_to_dissolve
-		material_override.set_shader_parameter("t", dissolve_progress)
+		get_active_material(0).set_shader_parameter("t", dissolve_progress)
 		
 		if dissolve_progress >= time_to_dissolve:
 			dissolve_started = false
 			dissolve_finished.emit()
 
 func dissolve(impact_pos : Vector3):
-	material_override.set_shader_parameter("impact_position", impact_pos)
+	get_active_material(0).set_shader_parameter("impact_position", impact_pos)
 	dissolve_started = true

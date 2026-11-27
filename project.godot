@@ -24,7 +24,7 @@ driver/output_latency=10
 [autoload]
 
 Conductor="*uid://dry8gufuf4jb"
-RuleSet="*uid://jrhwhdiww15m"
+RuleSet="*uid://bomv4sd3jago7"
 
 [debug_draw_3d]
 

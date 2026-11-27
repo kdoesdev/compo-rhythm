@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bl5jl44d7aqaw" path="res://scripts/song_spec.gd" id="1_q5sqs"]
 [ext_resource type="AudioStream" uid="uid://cvqheucoy1s4h" path="res://sound/songs/swinglounge/drums_fx.wav" id="2_ejxhk"]
 [ext_resource type="AudioStream" uid="uid://crykx3ft0bbkw" path="res://sound/songs/swinglounge/swing_lounge_guitar.wav" id="3_ejxhk"]
-[ext_resource type="MidiResource" uid="uid://b1fwfh2gcgfa2" path="res://sound/songs/SwingLounge.mid" id="5_kn0kk"]
+[ext_resource type="MidiResource" uid="uid://b1fwfh2gcgfa2" path="res://sound/songs/swinglounge/SwingLounge.mid" id="5_kn0kk"]
 
 [resource]
 script = ExtResource("1_q5sqs")

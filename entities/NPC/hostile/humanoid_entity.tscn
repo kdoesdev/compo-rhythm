@@ -3,32 +3,23 @@
 [ext_resource type="Script" uid="uid://iilviohproc2" path="res://entities/NPC/hostile/humanoid_entity.gd" id="1_tmm4x"]
 [ext_resource type="PackedScene" uid="uid://c16r7urmci7tf" path="res://systems/senses/sense_sight.tscn" id="2_4dqoh"]
 [ext_resource type="PackedScene" uid="uid://d0jud1gwvjjkp" path="res://entities/NPC/hostile/dissolvable.tscn" id="2_h4g5p"]
-[ext_resource type="Shader" uid="uid://c80s3p4vesk83" path="res://common/effects/dissolve.gdshader" id="3_a1sb7"]
-[ext_resource type="Texture2D" uid="uid://c46xvf1efpphd" path="res://common/effects/perlin_noise.png" id="4_fgldw"]
+[ext_resource type="Shader" uid="uid://bt56xvehjjlx7" path="res://common/effects/telegraph.gdshader" id="6_71oa4"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_h4g5p"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wrc7e"]
 resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("3_a1sb7")
-shader_parameter/t = 0.0
-shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/noise_tex = ExtResource("4_fgldw")
-shader_parameter/noise_scale = 1.0
-shader_parameter/burn_size = 0.12999999709424
-shader_parameter/burn_emissive = 11.1999997720096
-shader_parameter/burn_color = Color(1, 0, 0, 1)
-shader_parameter/impact_position = Vector3(0.5, 0.965, 0)
+shader = ExtResource("6_71oa4")
+shader_parameter/alpha = 0.0
+shader_parameter/strength = 10.000000475
+shader_parameter/color = Color(0, 0, 0, 1)
 
 [node name="HostileHumanoid" type="CharacterBody3D" unique_id=1808762767 node_paths=PackedStringArray("mesh")]
 script = ExtResource("1_tmm4x")
-path_update_rate = null
-lock_on_time = null
 mesh = NodePath("Dissolvable")
-beat_combo = null
 
 [node name="Dissolvable" parent="." unique_id=1344224893 instance=ExtResource("2_h4g5p")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-material_override = SubResource("ShaderMaterial_h4g5p")
+material_overlay = SubResource("ShaderMaterial_wrc7e")
 
 [node name="Sight" parent="." unique_id=1165751035 instance=ExtResource("2_4dqoh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
