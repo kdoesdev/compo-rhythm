@@ -10,6 +10,7 @@ var time : float = -1
 var spec : BeatEventSpec = null
 var note : Variant
 
+var telegraph_alpha_raw : float = 0
 var telegraph_alpha : float = 0
 
 static func create(time : float, note : Variant) -> BeatEvent:

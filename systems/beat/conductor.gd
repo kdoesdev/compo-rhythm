@@ -30,9 +30,10 @@ signal section_changed(new_section : String, section_index : int)
 signal event_added(event : BeatEvent)
 
 class EventTiming:
-	func update_telegraph(alpha : float):
+	func update_telegraph(alpha : float, raw_ms : float):
 		for event in events:
 			event.telegraph_alpha = alpha
+			event.telegraph_alpha_raw = 1 - (raw_ms / 1000)
 		
 	func update_status(new_status : RuleSet.WindowStatus):
 		_status = new_status
@@ -219,12 +220,13 @@ func attempt_events():
 func process_beat():
 	for timing in _timings:
 		
-		var time_diff_ms : float = abs(get_time_diff_ms(timing))
+		var time_diff_ms_raw : float = get_time_diff_ms(timing)
+		var time_diff_ms : float = abs(time_diff_ms_raw)
 		var new_status : RuleSet.WindowStatus = get_beat_status_from_ms(time_diff_ms)
 		
 		var event_timing := _timings[timing]
 		var alpha : float = RuleSet.telegraph_curve.sample(time_diff_ms)
-		event_timing.update_telegraph(alpha)
+		event_timing.update_telegraph(alpha, time_diff_ms_raw)
 		
 		if event_timing._status == new_status:
 			continue

@@ -14,6 +14,9 @@ extends EventSource
 
 @export var _should_dissolve : bool = true 
 
+@onready var telegraph : MeshInstance3D = $Telegraph
+
+
 var time_locked_on : float = 0
 
 var is_alive : bool = true
@@ -71,9 +74,15 @@ func look_at_target():
 
 func _process(delta: float) -> void:
 	super(delta)
-	var material := mesh.material_overlay as ShaderMaterial
-	material.set_shader_parameter('alpha', telegraph_intensity)
+	var material := telegraph.get_active_material(0) as ShaderMaterial
 	material.set_shader_parameter('color', RuleSet.telegraph_gradient.sample(telegraph_intensity))
+	
+	var alphas : Array[float]
+	for event in events:
+		alphas.append(event.telegraph_alpha_raw)
+	
+	material.set_shader_parameter('alphas', alphas)
+	material.set_shader_parameter('ring_count', alphas.size())
 
 func entity_sight_updated(entity: Node3D, can_see: bool):
 	if !can_see:
