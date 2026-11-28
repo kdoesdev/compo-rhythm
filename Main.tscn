@@ -9,7 +9,8 @@
 [ext_resource type="Resource" uid="uid://bb2f6fn7i3wbo" path="res://data/entity/entity_spec_basic_humanoid_no_combo.tres" id="10_20pc6"]
 [ext_resource type="Script" uid="uid://bc242o0adstvm" path="res://systems/entity/entity_spawner.gd" id="10_wkp8b"]
 [ext_resource type="Script" uid="uid://bn6m4hepmufrh" path="res://systems/entity/event_entity_spec.gd" id="11_5vvyt"]
-[ext_resource type="Resource" uid="uid://carf6vtf81m66" path="res://data/entity/entity_spec_basic_humanoid.tres" id="12_c6i3y"]
+[ext_resource type="PackedScene" uid="uid://b8l4ac8wswerd" path="res://ui/timing/track_visualiser.tscn" id="11_20pc6"]
+[ext_resource type="Shader" uid="uid://df2saaiw7soxu" path="res://common/effects/film_grain.gdshader" id="11_c6i3y"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_l3n1l"]
 vertices = PackedVector3Array(-6.618553, 0.49999905, -5.611397, -6.618553, 0.49999905, -14.611397, -7.118553, 0.49999905, -14.861397, -16.868553, 0.49999905, -5.611397, -7.118553, 0.49999905, -22.361397, -5.618553, 0.49999905, -102.3614, -104.11855, 0.49999905, -102.3614, -104.11855, 0.49999905, -3.3613968, -5.368553, 0.49999905, -22.611397, -17.118553, 0.49999905, -3.3613968, 6.881447, 0.49999905, -22.611397, 7.131447, 0.49999905, -102.3614, 8.631447, 0.49999905, -22.361397, 8.631447, 0.49999905, -16.611397, 14.881447, 0.49999905, -16.611397, 15.131447, 0.49999905, -14.361397, 104.13145, 0.49999905, -14.361397, 104.13145, 0.49999905, -102.3614, -6.118553, 22, -21.611397, -6.118553, 22, -15.611397, 7.631447, 22, -15.611397, 7.631447, 22, -21.611397, -5.868553, 0.49999905, -21.361397, -5.868553, 0.49999905, -15.861397, 7.381447, 0.49999905, -15.861397, 7.381447, 0.49999905, -21.361397, 14.131447, 15.249999, -15.611397, 8.631447, 15.249999, -15.611397, 8.381447, 15.249999, -14.861397, 8.381447, 15.249999, 4.138603, 14.131447, 15.249999, 4.138603, 8.631447, 0.49999905, -15.361397, 8.631447, 0.49999905, 3.8886032, 13.881447, 0.49999905, 3.8886032, 13.881447, 0.49999905, -15.361397, -1.3685532, 0.49999905, -5.361397, -1.1185532, 0.49999905, -14.611397, 0.13144684, 0.49999905, -5.361397, 0.38144684, 0.49999905, -4.611397, 7.381447, 0.49999905, -4.611397, 7.381447, 0.49999905, -14.611397, 15.131447, 0.49999905, 2.8886032, 104.13145, 0.49999905, 2.8886032, -16.118553, 15.499999, -4.611397, -16.118553, 15.499999, 4.638603, -6.868553, 15.499999, 4.638603, -6.868553, 15.499999, -4.611397, 0.13144684, 0.49999905, -3.6113968, -0.61855316, 0.49999905, -3.6113968, -0.36855316, 0.49999905, -0.8613968, 0.63144684, 0.49999905, -0.6113968, 0.63144684, 0.49999905, 3.3886032, 7.381447, 0.49999905, 3.1386032, -15.868553, 0.49999905, -4.361397, -15.868553, 0.49999905, 4.388603, -7.118553, 0.49999905, 4.388603, -7.118553, 0.49999905, -4.361397, -1.1185532, 0.49999905, -0.6113968, -5.868553, 0.49999905, -3.6113968, -5.868553, 0.49999905, 3.6386032, -1.1185532, 0.49999905, 3.6386032, -104.11855, 0.49999905, 3.3886032, -17.118553, 0.49999905, 3.3886032, 15.131447, 0.49999905, 4.888603, 13.381447, 0.49999905, 5.138603, 13.631447, 0.49999905, 102.3886, 104.13145, 0.49999905, 102.3886, -17.118553, 0.49999905, 5.388603, -15.368553, 0.49999905, 5.638603, -104.11855, 0.49999905, 102.3886, -15.618553, 0.49999905, 102.3886, 7.381447, 0.49999905, 4.888603, 0.63144684, 0.49999905, 5.388603, -0.11855316, 0.49999905, 5.638603, -0.11855316, 0.49999905, 102.3886, 8.881447, 0.49999905, 102.3886, 9.131447, 0.49999905, 5.138603, -1.1185532, 0.49999905, 5.388603, -5.868553, 0.49999905, 5.388603, -7.618553, 0.49999905, 5.638603, -7.368553, 0.49999905, 102.3886)
@@ -25,8 +26,20 @@ metadata/_custom_type_script = "uid://tencdc1hbf0f"
 
 [sub_resource type="Resource" id="Resource_20pc6"]
 script = ExtResource("9_20pc6")
-entity_specs = Array[ExtResource("11_5vvyt")]([ExtResource("12_c6i3y"), ExtResource("10_20pc6"), ExtResource("10_20pc6")])
+entity_specs = Array[ExtResource("11_5vvyt")]([ExtResource("10_20pc6")])
 metadata/_custom_type_script = "uid://tencdc1hbf0f"
+
+[sub_resource type="Gradient" id="Gradient_20pc6"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 1, 1, 0.68235296)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fpfj3"]
+gradient = SubResource("Gradient_20pc6")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c2ibq"]
+shader = ExtResource("11_c6i3y")
+shader_parameter/pixel = 5.0
+shader_parameter/pallete = SubResource("GradientTexture1D_fpfj3")
 
 [node name="Main" type="Node" unique_id=1939485485]
 script = ExtResource("1_fos0i")
@@ -105,11 +118,24 @@ spawn_spec = Dictionary[int, ExtResource("9_20pc6")]({
 metadata/_custom_type_script = "uid://bc242o0adstvm"
 
 [node name="EntitySpawner3" type="Node3D" parent="." unique_id=670484051]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.951208, 0, 8.37289)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.704, 0, 11.665)
 script = ExtResource("10_wkp8b")
 spawn_spec = Dictionary[int, ExtResource("9_20pc6")]({
 0: SubResource("Resource_20pc6")
 })
 metadata/_custom_type_script = "uid://bc242o0adstvm"
+
+[node name="TrackVisualiser" parent="." unique_id=30971489 instance=ExtResource("11_20pc6")]
+
+[node name="PostProcessLayer" type="CanvasLayer" parent="." unique_id=2099011543]
+
+[node name="Grain" type="ColorRect" parent="PostProcessLayer" unique_id=1715407852]
+material = SubResource("ShaderMaterial_c2ibq")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [editable path="NavigationRegion3D/Area3D"]
